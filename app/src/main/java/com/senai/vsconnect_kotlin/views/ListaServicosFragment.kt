@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.senai.vsconnect_kotlin.adapters.ListaServicoAdapter
 import com.senai.vsconnect_kotlin.apis.EndpointInterface
 import com.senai.vsconnect_kotlin.apis.RetrofitConfig
 import com.senai.vsconnect_kotlin.databinding.FragmentListaServicosBinding
@@ -34,11 +36,13 @@ class ListaServicosFragment : Fragment() {
         _binding = FragmentListaServicosBinding.inflate(inflater, container, false)
 
         val root: View = binding.root
+        binding.recyclerServicos.layoutManager = LinearLayoutManager(requireContext())
 
         endpoints.listarServicos().enqueue(object  : Callback<List<Servico>> {
             override fun onResponse(call: Call<List<Servico>>, response:
             Response<List<Servico>>) {
-                println(response.body())
+                val  servico = response.body()
+                binding.recyclerServicos.adapter = servico?.let { ListaServicoAdapter(requireContext(),it) }
             }
 
             override fun onFailure(call: Call<List<Servico>>, t: Throwable) {
